@@ -74,8 +74,8 @@ const QWEN_PORTAL_DEFAULT_COST = {
   cacheWrite: 0,
 };
 
-const OLLAMA_BASE_URL = "http://127.0.0.1:11434/v1";
-const OLLAMA_API_BASE_URL = "http://127.0.0.1:11434";
+const OLLAMA_API_BASE_URL = process.env.OLLAMA_HOST?.replace(/\/+$/, "") || "http://127.0.0.1:11434";
+const OLLAMA_BASE_URL = `${OLLAMA_API_BASE_URL}/v1`;
 const OLLAMA_DEFAULT_CONTEXT_WINDOW = 128000;
 const OLLAMA_DEFAULT_MAX_TOKENS = 8192;
 const OLLAMA_DEFAULT_COST = {
@@ -136,7 +136,7 @@ async function discoverOllamaModels(baseUrl?: string): Promise<ModelDefinitionCo
   try {
     const apiBase = resolveOllamaApiBase(baseUrl);
     const response = await fetch(`${apiBase}/api/tags`, {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(30000),
     });
     if (!response.ok) {
       console.warn(`Failed to discover Ollama models: ${response.status}`);

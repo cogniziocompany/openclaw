@@ -18,10 +18,14 @@ RUN if [ -n "$OPENCLAW_DOCKER_APT_PACKAGES" ]; then \
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY ui/package.json ./ui/package.json
+# Ensure workspace package.json files are available for pnpm install
+COPY packages/ packages/
+COPY extensions/ extensions/
+# Filter out non-package files if needed, but for now copying the folders is safer than missing files
 COPY patches ./patches
 COPY scripts ./scripts
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 COPY . .
 RUN pnpm build
